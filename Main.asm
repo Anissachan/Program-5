@@ -41,16 +41,16 @@ loop	LDI R0, Buffer		;output character to console
 
 	   ADD R0, R0, #0		;tells what letter is in R0
 	   LD R2, CHECKA		
-	   ADD R3, R0, R2
+	   ADD R2, R0, R2
 	   Brz LETTERA
 	   LD R2, CHECKU
-	   ADD R3, R0, R2
+	   ADD R2, R0, R2
 	   BRz LETTERU
 	   LD R2, CHECKC
-	   ADD R3, R0, R2
+	   ADD R2, R0, R2
 	   BRz LETTERC
 	   LD R2, CHECKG
-	   ADD R3, R0, R2
+	   ADD R2, R0, R2
 	   BRz LETTERG
 
 	
@@ -88,16 +88,16 @@ isinSeqG ADD R4, R4, #1
 StopCodon  
 	   ADD R0, R0, #0		;tells what letter is in R0
 	   LD R2, CHECKA		
-	   ADD R3, R0, R2
+	   ADD R2, R0, R2
 	   Brz CHARACTERA
 	   LD R2, CHECKU
-	   ADD R3, R0, R2
+	   ADD R2, R0, R2
 	   BRz CHARACTERU
 	   LD R2, CHECKC
-	   ADD R3, R0, R2
+	   ADD R2, R0, R2
 	   BRz CHARACTERC
 	   LD R2, CHECKG
-	   ADD R3, R0, R2
+	   ADD R2, R0, R2
 	   BRz CHARACTERG
 
 
@@ -119,16 +119,33 @@ isinSeqAFINAL   ADD R4, R4, #1
 CHARACTERG 
 	   ADD R5, R4, #-3
 	   BRz loop
-	   ADD R5, R4, #-5		;checking if G is second last or last input
-	   BRnz isinSeqGFINAL
+	   ADD R5, R4, #-4		;checking if G is second last in sequence
+	   BRz Gis2ndInSeq
+	   ADD R5, R4, #-5		;checking if G is last in sequence
+	   BRz GisLastinSeq
 	   AND R4, R4, #0		
            ADD R4, R4, #3		;reinitialising pointer to 3
 	   BRnzp loop
 
-isinSeqGFINAL	ADD R4, R4, #1		;incrementing counter
+Gis2ndInSeq	AND R3, R3, #0
+		ADD R3, R3, #1		;incrementing G counter
+		ST R3, GCount
+		ADD R4, R4, #1
+		BRnzp loop		;incrementing sequence counter
+
+GisLastinSeq	ADD R4, R4, #1		;incrementing counter
+		LD R3, GCount
+		ADD R3, R3, #-1		;checking if sequence has 'GG'
+	        BRz GnotinSeq
 		ADD R5, R4, #-6		;checking if G is the last input
-	        BRz ENDING
-		BRnp loop
+		Brz ENDING
+		Brnzp loop
+
+GnotinSeq	AND R4, R4, #0		;clearing sequence counter
+		AND R3, R3, #0		;clearing G counter
+		ADD R4, R4, #3
+		Brnzp loop
+
 
 
 
@@ -142,7 +159,7 @@ ENDING HALT
 		
 
 
-
+GCount  .BLKW 1
 CHECKA	.FILL #-65
 CHECKU	.FILL #-85
 CHECKC	.FILL #-67
@@ -159,6 +176,7 @@ KBSR 	.FILL xFE00
 KBIEN	.FILL x4000
 Buffer	.FILL x4600
 BAR	.FILL #124
+
 
 
 		.END
