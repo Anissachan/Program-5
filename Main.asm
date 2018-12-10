@@ -102,7 +102,7 @@ StopCodon
 
 
 CHARACTERU AND R4, R4, #0
-	   ADD R4, R4, #4	
+	   ADD R4, R4, #4	;counter in R4 will now start with 4 instead of zero
 	   BRnzp loop
 
 CHARACTERA ADD R5, R4, #-4
