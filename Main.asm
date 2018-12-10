@@ -25,30 +25,34 @@
 ; start of actual program
 
 
-loop	LDI R0, Buffer
+loop	LDI R0, Buffer		;output character to console
 	BRz loop
 	TRAP x21
 	AND R1, R1, #0
 	STI R1, Buffer
 
 	ADD R5, R4, #-3
-	BRz StopCodon
+	BRzp StopCodon
 	
 
 ;increment 4: check for start codon
-	ADD R0, R0, #0		;tells what letter is in R0
-	LD R2, CHECKA		
-	ADD R3, R0, R2
-	Brz LETTERA
-	LD R2, CHECKU
-	ADD R3, R0, R2
-	BRz LETTERU
-	LD R2, CHECKC
-	ADD R3, R0, R2
-	BRz LETTERC
-	LD R2, CHECKG
-	ADD R3, R0, R2
-	BRz LETTERG
+
+	   ADD R0, R0, #0		;tells what letter is in R0
+	   LD R2, CHECKA		
+	   ADD R3, R0, R2
+	   Brz LETTERA
+	   LD R2, CHECKU
+	   ADD R3, R0, R2
+	   BRz LETTERU
+	   LD R2, CHECKC
+	   ADD R3, R0, R2
+	   BRz LETTERC
+	   LD R2, CHECKG
+	   ADD R3, R0, R2
+	   BRz LETTERG
+
+	
+
 
 LETTERA
 	AND R4, R4, #0
@@ -61,7 +65,7 @@ LETTERU
 	AND R4, R4, #0
 	BRnzp loop
 
-isinSeqU	ADD R4, R4, #1
+isinSeqU        ADD R4, R4, #1
 		BRnzp loop
 
 
@@ -79,7 +83,57 @@ isinSeqG ADD R4, R4, #1
 	 BRnzp loop
 
 
-StopCodon HALT
+StopCodon  
+	   ADD R0, R0, #0		;tells what letter is in R0
+	   LD R2, CHECKA		
+	   ADD R3, R0, R2
+	   Brz CHARACTERA
+	   LD R2, CHECKU
+	   ADD R3, R0, R2
+	   BRz CHARACTERU
+	   LD R2, CHECKC
+	   ADD R3, R0, R2
+	   BRz CHARACTERC
+	   LD R2, CHECKG
+	   ADD R3, R0, R2
+	   BRz CHARACTERG
+
+
+CHARACTERU AND R4, R4, #0
+	   ADD R4, R4, #4	
+	   BRnzp loop
+
+CHARACTERA ADD R5, R4, #-4
+	   BRzp isinSeqAFINAL
+	   AND R4, R4, #0
+	   ADD R4, R4, #3
+	   BRnzp loop
+
+isinSeqAFINAL   ADD R4, R4, #1
+	   ADD R5, R4, #-6
+	   BRz	ENDING
+	   BRnp loop
+
+CHARACTERG ADD R5, R4, #-5
+	   BRzp isinSeqGFINAL
+	   AND R4, R4, #0
+           ADD R4, R4, #3
+	   BRnzp loop
+
+isinSeqGFINAL	ADD R4, R4, #1
+		ADD R5, R4, #-6
+	        BRZ ENDING
+		BRnp loop
+
+CHARACTERC 	AND R4, R4, #3		;clearing counter since C does not contribute to the sequence
+		BRnzp loop
+	        
+
+ 
+ENDING HALT
+		
+
+
 
 CHECKA	.FILL #-65
 CHECKU	.FILL #-85
@@ -87,7 +141,6 @@ CHECKC	.FILL #-67
 CHECKG	.FILL #-71
 
 
-;increment 5: skip till stop codon
 
 
 

@@ -31,7 +31,6 @@ Invalid	RTI
 
 Store	STI R0, StoreChar
 	
-
 RTI
 	
 
