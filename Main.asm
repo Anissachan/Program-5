@@ -33,7 +33,7 @@ loop	LDI R0, Buffer		;output character to console
 	STI R1, Buffer
 
 
-	ADD R5, R4, #-3
+	ADD R5, R4, #-3		;checks if start codon has been detected using sequence counter
 	BRzp StopCodon
 	
 
@@ -58,29 +58,29 @@ loop	LDI R0, Buffer		;output character to console
 
 LETTERA
 	AND R4, R4, #0
-	ADD R4, R4, #1		;counter to keep track of three
+	ADD R4, R4, #1		;incrementing sequence counter to 1
 	BRnzp loop
 
 LETTERU
 	ADD R5, R4, #-1
 	BRz isinSeqU
-	AND R4, R4, #0
+	AND R4, R4, #0		;clearing sequence counter if U is not in sequence
 	BRnzp loop
 
-isinSeqU        ADD R4, R4, #1
-		BRnzp loop
+isinSeqU        ADD R4, R4, #1	;incrementing sequence counter
+		BRnzp loop		
 
 
-LETTERC	AND R4, R4, #0		;clearing counter since C does not contribute to the sequence
+LETTERC	AND R4, R4, #0		;clearing sequence counter since C does not contribute to the sequence
 	BRnzp loop
 
-LETTERG	ADD R5, R4, #-2
+LETTERG	ADD R5, R4, #-2		
 	BRz isinSeqG
-	AND R4, R4, #0
+	AND R4, R4, #0		;clearing sequence counter if G is not in sequence
 	BRnzp loop
 
 isinSeqG ADD R4, R4, #1
-	 LD R0, BAR
+	 LD R0, BAR		;since G is in sequence, print bar to console
 	 OUT
 	 BRnzp loop
 
@@ -111,10 +111,10 @@ CHARACTERA ADD R5, R4, #-4
 	   ADD R4, R4, #3
 	   BRnzp loop
 
-isinSeqAFINAL   ADD R4, R4, #1
-	   ADD R5, R4, #-6
-	   BRz	ENDING
-	   BRnp loop
+isinSeqAFINAL   ADD R4, R4, #1		
+	   	ADD R5, R4, #-6		;if A is in sequence, stop codon is detected. End program 
+	   	BRz	ENDING
+	   	BRnp loop
 
 CHARACTERG 
 	   ADD R5, R4, #-3
