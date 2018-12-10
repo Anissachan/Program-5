@@ -10,6 +10,7 @@
 START 	LDI R1, KBSR
 	BRzp START
 	LDI R0, KBDR
+	
 
 checkA 	LD R2, A
 	ADD R3, R2, R0

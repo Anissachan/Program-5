@@ -21,6 +21,7 @@
 	LD R0, KBIEN
 	STI R0, KBSR
 
+
 	
 ; start of actual program
 
@@ -30,6 +31,7 @@ loop	LDI R0, Buffer		;output character to console
 	TRAP x21
 	AND R1, R1, #0
 	STI R1, Buffer
+
 
 	ADD R5, R4, #-3
 	BRzp StopCodon
@@ -114,18 +116,24 @@ isinSeqAFINAL   ADD R4, R4, #1
 	   BRz	ENDING
 	   BRnp loop
 
-CHARACTERG ADD R5, R4, #-5
-	   BRzp isinSeqGFINAL
-	   AND R4, R4, #0
-           ADD R4, R4, #3
+CHARACTERG 
+	   ADD R5, R4, #-3
+	   BRz loop
+	   ADD R5, R4, #-5		;checking if G is second last or last input
+	   BRnz isinSeqGFINAL
+	   AND R4, R4, #0		
+           ADD R4, R4, #3		;reinitialising pointer to 3
 	   BRnzp loop
 
-isinSeqGFINAL	ADD R4, R4, #1
-		ADD R5, R4, #-6
-	        BRZ ENDING
+isinSeqGFINAL	ADD R4, R4, #1		;incrementing counter
+		ADD R5, R4, #-6		;checking if G is the last input
+	        BRz ENDING
 		BRnp loop
 
-CHARACTERC 	AND R4, R4, #3		;clearing counter since C does not contribute to the sequence
+
+
+CHARACTERC 	AND R4, R4, #0
+		ADD R4, R4, #3		;clearing counter since C does not contribute to the sequence
 		BRnzp loop
 	        
 
@@ -140,8 +148,8 @@ CHECKU	.FILL #-85
 CHECKC	.FILL #-67
 CHECKG	.FILL #-71
 
-
-
+DSR	.FILL xFE04
+DDR	.FILL xFE06
 
 
 STACK	.FILL x4000
