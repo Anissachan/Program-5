@@ -24,15 +24,15 @@
 	
 ; start of actual program
 
-;increment 3:
 
 loop	LDI R0, Buffer
 	BRz loop
 	TRAP x21
 	AND R1, R1, #0
 	STI R1, Buffer
-	
-	;Process R0
+
+	ADD R5, R4, #-3
+	BRz StopCodon
 	
 
 ;increment 4: check for start codon
@@ -56,10 +56,30 @@ LETTERA
 	BRnzp loop
 
 LETTERU
+	ADD R5, R4, #-1
+	BRz isinSeqU
+	AND R4, R4, #0
+	BRnzp loop
 
-LETTERC
+isinSeqU	ADD R4, R4, #1
+		BRnzp loop
 
-LETTERG
+
+LETTERC	AND R4, R4, #0		;clearing counter since C does not contribute to the sequence
+	BRnzp loop
+
+LETTERG	ADD R5, R4, #-2
+	BRz isinSeqG
+	AND R4, R4, #0
+	BRnzp loop
+
+isinSeqG ADD R4, R4, #1
+	 LD R0, BAR
+	 OUT
+	 BRnzp loop
+
+
+StopCodon HALT
 
 CHECKA	.FILL #-65
 CHECKU	.FILL #-85
@@ -77,7 +97,7 @@ KBISR 	.FILL x2600
 KBSR 	.FILL xFE00
 KBIEN	.FILL x4000
 Buffer	.FILL x4600
-
+BAR	.FILL #124
 
 
 		.END

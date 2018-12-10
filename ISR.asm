@@ -10,7 +10,6 @@
 START 	LDI R1, KBSR
 	BRzp START
 	LDI R0, KBDR
-	BRnzp checkA
 
 checkA 	LD R2, A
 	ADD R3, R2, R0
@@ -27,6 +26,8 @@ checkC 	LD R2, C
 checkG	LD R2, G
 	ADD R3, R2, R0
 	BRz Store
+
+Invalid	RTI
 
 Store	STI R0, StoreChar
 	
