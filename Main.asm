@@ -27,7 +27,7 @@
 
 
 loop	LDI R0, Buffer		;output character to console
-	BRz loop
+	BRz loop		;waits for an input, so keeps looping until it gets a letter
 	TRAP x21
 	AND R1, R1, #0
 	STI R1, Buffer
